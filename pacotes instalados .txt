@@ -1,0 +1,8 @@
+npm install react-icons
+npm install react-router-dom
+npm install primereact
+npm install primeicons
+npm install primeflex
+npm i classnames
+npm i react-transition-group
+npm install axios
