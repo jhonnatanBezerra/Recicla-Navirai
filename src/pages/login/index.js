@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import Api from '../../services/ApiLocal';
+import api from '../../services/ApiLocal';
 
 
 import './styles.css';
@@ -21,14 +21,14 @@ export default function Login() {
     const data = {
       email,
       senha,
-    };
+    }
 
     try {
-      const response = await Api.post('gestores/autenticar', data);
+      const response = await api.post('gestores/autenticar', data);
       localStorage.setItem('usuario', response.data.nome);
       history.push('/agendamentos');
     } catch (err) {
-      console.log(err.response.data);
+      alert('erro');
     }
 
   }

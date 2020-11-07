@@ -27,11 +27,11 @@ export default function CompHeader() {
       </div>
 
       <nav className="nav-bar">
-        <Link>Agendamentos</Link>
-        <Link>Ações</Link>
-        <Link>Denuncias</Link>
-        <Link>Educação Ambiental</Link>
-        <Link>Gestores</Link>
+        <Link to="agendamentos">Agendamentos</Link>
+        <Link to="acoes">Ações</Link>
+        <Link to="denuncias">Denuncias</Link>
+        <Link to="ambiental">Educação Ambiental</Link>
+
       </nav>
 
       <div className="user-status">

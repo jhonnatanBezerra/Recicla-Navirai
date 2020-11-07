@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Header from '../../components/header'
+import api from '../../services/ApiSwagger';
 
 import { FiTrash2, FiCheck } from 'react-icons/fi'
 import { BiAddToQueue } from 'react-icons/bi'
@@ -12,15 +13,35 @@ import './styles.css';
 export default function Agendametos() {
 
   const [hidden, setHidden] = useState(false);
+  const [bairros, setBairros] = useState([]);
+  const [agendamentos, setAgendamentos] = useState([]);
+
+  const [diaSemana, setDia] = useState([]);
+  const [bairroID, setBairroID] = useState([]);
+  const [horario, setHorario] = useState([]);
+  const [tipoColeta, setTipoColeta] = useState([]);
+
+
+  useEffect(() => {
+
+    api.get('bairros').then(response => {
+      setBairros(response.data);
+    }, []);
+
+    api.get('agendamentos').then(response => {
+      setAgendamentos(response.data);
+    })
+  }, []);
+
+
+  // Funções do Modal
 
   function openModal() {
     setHidden(true);
-    console.log(hidden);
   }
 
   function closeModal() {
     setHidden(false);
-    console.log(hidden);
   }
 
   function footerModalButtons() {
@@ -28,10 +49,10 @@ export default function Agendametos() {
 
       <div className="modal-buttons">
         <button onClick={closeModal}> <IoMdClose />Cancelar</button>
-        <button> <FiCheck />Agendar</button>
-
+        <button type="submit" onClick={handleRegister} > <FiCheck />Agendar</button>
       </div>
-    )
+    );
+
   }
 
   function headerModal() {
@@ -42,14 +63,49 @@ export default function Agendametos() {
     )
   }
 
+  //  Funções para agendamentos
+
+  async function handleRegister(e) {
+    e.preventDefault();
+
+    const data = {
+      bairro: {
+        "id": bairroID
+      },
+      diaSemana,
+      horario,
+      tipoColeta,
+    };
+
+    try {
+      await api.post('agendamentos', data);
+      alert('Novo agendamento cadastrado com sucesso');
+      closeModal();
+    } catch (err) {
+      alert('Aconteceu um erro');
+      console.log(data);
+    }
+
+  }
+
+  async function handlerDelete(id) {
+    try {
+      await api.delete(`agendamentos/${id}`);
+      alert('Agendamento deletado com sucesso');
+
+      setAgendamentos(agendamentos.filter(agendamento => agendamento.id !== id)); // removendo em tempo real o que foi excluido
+    } catch (err) {
+      alert('Erro ao deletar, tente novamente mais tarde');
+    }
+  }
 
   return (
     <>
       <Dialog visible={hidden} header={headerModal()} footer={footerModalButtons()} style={{ width: '45vw' }} onHide={closeModal}>
-        <div className="modal-container">
-          <form className="input-dialog">
+        <div className="modal-container" >
+          <form className="input-dialog" >
             <label >Dia da Coleta</label>
-            <select >
+            <select name="dia" onChange={e => setDia(e.target.value)}>
               <option value="" >Dia de semana</option>
               <option value="SEGUNDA">Segunda-Feira</option>
               <option value="TERCA">Terça-Feira</option>
@@ -62,23 +118,25 @@ export default function Agendametos() {
 
             <div className="times">
               <label>Das</label>
-              <input type="time" />
+              <input type="time" onChange={e => setHorario(e.target.value)} />
               <label>Ás</label>
               <input type="time" />
             </div>
 
             <label >Bairro da Coleta</label>
-            <select name="bairro" >
+            <select name="bairro" onChange={e => setBairroID(e.target.value)}>
               <option value="">Selecione o bairro</option>
+              {bairros.map(bairro => (
+                <option key={bairro.id} value={bairro.id}>{bairro.nome}</option>
+              ))}
             </select>
 
             <label >Tipo de coleta</label>
-            <select name="coleta">
+            <select name="coleta" onChange={e => setTipoColeta(e.target.value)}>
               <option value="">Tipo de coleta</option>
+              <option value="COLETACOMUM">Coleta comum</option>
+              <option value="COLETASELETIVA">Coleta seletiva</option>
             </select>
-
-
-
 
           </form>
         </div>
@@ -97,113 +155,25 @@ export default function Agendametos() {
 
             <ul>
 
-              <li>
-                <strong>Dia de Coleta</strong>
-                <p>Terça-Feira</p>
+              {agendamentos.map(agendamento => (
+                <li key={agendamento.id}>
+                  <strong>Dia de Coleta</strong>
+                  <p>{agendamento.diaSemana}</p>
 
-                <strong>Horario da Coleta</strong>
-                <p>Das 12:00 as 18:00</p>
+                  <strong>Horario da Coleta</strong>
+                  <p>{agendamento.horario}</p>
 
-                <strong>Bairro</strong>
-                <p>Harry Amorim</p>
+                  <strong>Bairro</strong>
+                  <p>{agendamento.bairro.nome}</p>
 
-                <strong>Tipo de Coleta</strong>
-                <p>Coleta Comum</p>
+                  <strong>Tipo de Coleta</strong>
+                  <p>{agendamento.tipoColeta}</p>
 
-                <button>
-                  <FiTrash2 />
-                </button>
-              </li>
-
-              <li>
-                <strong>Dia de Coleta</strong>
-                <p>Terça-Feira</p>
-
-                <strong>Horario da Coleta</strong>
-                <p>Das 12:00 as 18:00</p>
-
-                <strong>Bairro</strong>
-                <p>Harry Amorim</p>
-
-                <strong>Tipo de Coleta</strong>
-                <p>Coleta Comum</p>
-
-                <button>
-                  <FiTrash2 />
-                </button>
-              </li>
-
-              <li>
-                <strong>Dia de Coleta</strong>
-                <p>Terça-Feira</p>
-
-                <strong>Horario da Coleta</strong>
-                <p>Das 12:00 as 18:00</p>
-
-                <strong>Bairro</strong>
-                <p>Harry Amorim</p>
-
-                <strong>Tipo de Coleta</strong>
-                <p>Coleta Comum</p>
-
-                <button>
-                  <FiTrash2 />
-                </button>
-              </li>
-
-              <li>
-                <strong>Dia de Coleta</strong>
-                <p>Terça-Feira</p>
-
-                <strong>Horario da Coleta</strong>
-                <p>Das 12:00 as 18:00</p>
-
-                <strong>Bairro</strong>
-                <p>Harry Amorim</p>
-
-                <strong>Tipo de Coleta</strong>
-                <p>Coleta Comum</p>
-
-                <button>
-                  <FiTrash2 />
-                </button>
-              </li>
-
-              <li>
-                <strong>Dia de Coleta</strong>
-                <p>Terça-Feira</p>
-
-                <strong>Horario da Coleta</strong>
-                <p>Das 12:00 as 18:00</p>
-
-                <strong>Bairro</strong>
-                <p>Harry Amorim</p>
-
-                <strong>Tipo de Coleta</strong>
-                <p>Coleta Comum</p>
-
-                <button>
-                  <FiTrash2 />
-                </button>
-              </li>
-
-              <li>
-                <strong>Dia de Coleta</strong>
-                <p>Terça-Feira</p>
-
-                <strong>Horario da Coleta</strong>
-                <p>Das 12:00 as 18:00</p>
-
-                <strong>Bairro</strong>
-                <p>Harry Amorim</p>
-
-                <strong>Tipo de Coleta</strong>
-                <p>Coleta Comum</p>
-
-                <button>
-                  <FiTrash2 />
-                </button>
-              </li>
+                  <button onClick={() => handlerDelete(agendamento.id)}>
+                    <FiTrash2 />
+                  </button>
+                </li>
+              ))}
 
             </ul>
 

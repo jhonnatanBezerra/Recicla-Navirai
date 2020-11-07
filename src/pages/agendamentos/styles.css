@@ -126,6 +126,9 @@
   width: 230px;
   color: black;
   border-radius: 8px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   
 }
 
