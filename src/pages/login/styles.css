@@ -102,5 +102,13 @@
     margin-right: 8px;
   }
 
+  .p-toast{
+    width: 100vw;
+    padding:  0 50px;
+  }
 
+  .p-toast-message{
+    font-size: 18px;
+  }
 
+  

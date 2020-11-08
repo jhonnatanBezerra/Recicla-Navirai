@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import api from '../../services/ApiLocal';
-
+import { Toast } from 'primereact/toast';
 
 import './styles.css';
 import Fundo from '../../assets/pessoas.png';
@@ -14,6 +14,9 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const history = useHistory();
+
+  const tost = useRef(null);
+
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -28,26 +31,33 @@ export default function Login() {
       localStorage.setItem('usuario', response.data.nome);
       history.push('/agendamentos');
     } catch (err) {
-      alert('erro');
+      showTost(err.response.data);
     }
 
   }
 
-  return (
-    <div className="login-container">
-      <section className="form">
-        <strong>RECICLA</strong>
-        <strong> NAVIR<RiRecycleFill size={16} color="#008000" />Í</strong>
-        <form onSubmit={handleLogin}>
-          <h1>Faça seu Login</h1>
-          <input placeholder="E-mail" value={email} onChange={e => setEmail(e.target.value)} />
-          <input type="password" placeholder="Senha" value={senha} onChange={e => setSenha(e.target.value)} />
-          <button type="submit">Entrar</button>
-          <Link to="/registro-usuario"> <FiLogIn size={26} /> Não tenho cadastro</Link>
-        </form>
-      </section>
+  function showTost(err) {
+    tost.current.show({ severity: 'error', summary: 'Falha no login', detail: err, life: 3000 });
+  }
 
-      <img src={Fundo} alt="Recicla Naviraí" />
-    </div>
+  return (
+    <>
+      <Toast ref={tost}></Toast>
+      <div className="login-container">
+        <section className="form">
+          <strong>RECICLA</strong>
+          <strong> NAVIR<RiRecycleFill size={16} color="#008000" />Í</strong>
+          <form onSubmit={handleLogin}>
+            <h1>Faça seu Login</h1>
+            <input placeholder="E-mail" value={email} onChange={e => setEmail(e.target.value)} />
+            <input type="password" placeholder="Senha" value={senha} onChange={e => setSenha(e.target.value)} />
+            <button type="submit">Entrar</button>
+            <Link to="/registro-usuario"> <FiLogIn size={26} /> Não tenho cadastro</Link>
+          </form>
+        </section>
+
+        <img src={Fundo} alt="Recicla Naviraí" />
+      </div>
+    </>
   )
 }
