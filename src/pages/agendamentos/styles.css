@@ -43,20 +43,25 @@
   position: relative; 
 }
 
-.grid ul li button{
+.grid ul li .icons button{
   position: absolute;
-  right: 24px;
+  right: 5px;
   top: 24px;
   border: 0;
   background: #f0f0f0;
   transition: opacity 0.2s;
 }
 
-.grid ul li button svg{
+.grid ul li .icons button:first-child{  
+  margin-right: 25px;  
+}
+
+
+.grid ul li .icons button svg{
   color: #3c6232;
 }
 
-.grid ul li button:hover{
+.grid ul li .icons button:hover{
   opacity: 0.8;
 }
 

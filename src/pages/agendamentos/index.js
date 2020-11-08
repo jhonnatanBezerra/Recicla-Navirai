@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import Header from '../../components/header'
 import api from '../../services/ApiSwagger';
 
-import { FiTrash2, FiCheck } from 'react-icons/fi'
+import { FiTrash2, FiCheck, FiEdit } from 'react-icons/fi'
 import { BiAddToQueue } from 'react-icons/bi'
 import { IoMdClose } from 'react-icons/io'
+
 
 import { Dialog } from 'primereact/dialog';
 
@@ -88,6 +89,11 @@ export default function Agendametos() {
 
   }
 
+  async function handleUptade(id) {
+    const res = await api.put(`agendamentos/${id}`);
+    console.log(res);
+  }
+
   async function handlerDelete(id) {
     try {
       await api.delete(`agendamentos/${id}`);
@@ -169,9 +175,15 @@ export default function Agendametos() {
                   <strong>Tipo de Coleta</strong>
                   <p>{agendamento.tipoColeta}</p>
 
-                  <button onClick={() => handlerDelete(agendamento.id)}>
-                    <FiTrash2 />
-                  </button>
+                  <div className="icons">
+                    <button onClick={() => handleUptade(agendamento.id)}>
+                      <FiEdit />
+                    </button>
+
+                    <button onClick={() => handlerDelete(agendamento.id)}>
+                      <FiTrash2 />
+                    </button>
+                  </div>
                 </li>
               ))}
 
