@@ -3,7 +3,7 @@ import Header from '../../components/header'
 import api from '../../services/ApiSwagger';
 
 import { FiTrash2, FiCheck, FiEdit } from 'react-icons/fi'
-import { BiAddToQueue } from 'react-icons/bi'
+import { VscNewFile } from 'react-icons/vsc';
 import { IoMdClose } from 'react-icons/io'
 
 
@@ -152,13 +152,11 @@ export default function Agendametos() {
         <div className="content">
           <Header />
 
+          <div className="header">
+            <h1>AGENDAMENTOS</h1>
+            <button onClick={openModal}><VscNewFile /></button>
+          </div>
           <section className="grid">
-
-            <div className="header">
-              <h1>AGENDAMENTOS</h1>
-              <button onClick={openModal}><BiAddToQueue /></button>
-            </div>
-
             <ul>
 
               {agendamentos.map(agendamento => (

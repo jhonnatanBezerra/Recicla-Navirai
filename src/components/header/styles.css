@@ -6,7 +6,7 @@
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   background: #f0f0f0f5;
-  position: sticky;
+  position: static;
   top: 0;
   z-index: 5000;
 }

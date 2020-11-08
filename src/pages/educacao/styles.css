@@ -1,0 +1,37 @@
+.header-principal{
+  position: static;
+}
+
+.modal-container .input-dialog{
+  z-index: 999999;
+}
+
+.modal-container .input-dialog input{
+  background-color: #f0f0f0f5;
+  border: 0;
+  padding: 16px 24px;
+  border-radius: 8px;
+  margin: 5px 0;
+  color: rgb(59, 59, 59);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.modal-container .input-dialog textarea{
+  max-width: 45vw;
+  height: 150px;
+  background-color: #f0f0f0f5;
+  border: 0;
+  padding: 16px 24px;
+  border-radius: 8px;
+  margin: 8px 0;
+  color: rgb(59, 59, 59);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.modal-container .input-dialog input[type="date"]{
+  color: rgb(59, 59, 59);
+}

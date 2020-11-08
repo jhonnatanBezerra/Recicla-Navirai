@@ -20,7 +20,7 @@ export default function CompHeader() {
   return (
     <header className="header-principal">
       <div className="logo">
-        <Link to="/home">
+        <Link to="/agendamentos">
           <strong>RECICLA</strong>
           <strong> NAVIR<RiRecycleFill />Í</strong>
         </Link>
@@ -30,7 +30,7 @@ export default function CompHeader() {
         <Link to="agendamentos">Agendamentos</Link>
         <Link to="acoes">Ações</Link>
         <Link to="denuncias">Denuncias</Link>
-        <Link to="ambiental">Educação Ambiental</Link>
+        <Link to="edu-ambiental">Educação Ambiental</Link>
 
       </nav>
 
