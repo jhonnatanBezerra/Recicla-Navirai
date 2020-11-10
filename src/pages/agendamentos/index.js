@@ -17,22 +17,35 @@ export default function Agendametos() {
   const [bairros, setBairros] = useState([]);
   const [agendamentos, setAgendamentos] = useState([]);
 
-  const [diaSemana, setDia] = useState([]);
-  const [bairroID, setBairroID] = useState([]);
-  const [horario, setHorario] = useState([]);
-  const [tipoColeta, setTipoColeta] = useState([]);
+  const [diaSemana, setDia] = useState('');
+  const [bairroID, setBairroID] = useState('');
+  const [horario, setHorario] = useState('');
+  const [tipoColeta, setTipoColeta] = useState('');
 
+  const [agendamento, setAgendamento] = useState({
+    bairro: {
+      id: '',
+      nome: 'Selecione o Bairro',
+    },
+    id: '',
+    diaSemana: 'Dia semana',
+    horario: horario,
+    tipoColeta: 'Tipo de coleta'
+  })
+
+
+  async function atulizaCAmpos() {
+    const response = await api.get('agendamentos')
+    setAgendamentos(response.data);
+  }
 
   useEffect(() => {
 
     api.get('bairros').then(response => {
       setBairros(response.data);
     }, []);
-
-    api.get('agendamentos').then(response => {
-      setAgendamentos(response.data);
-    })
-  }, []);
+    atulizaCAmpos();
+  }, [])
 
 
   // Funções do Modal
@@ -42,14 +55,28 @@ export default function Agendametos() {
   }
 
   function closeModal() {
+    setHorario('Informe o horario de coleta');
+    setAgendamento({
+      bairro: {
+        id: '',
+        nome: 'Selecione o Bairro',
+      },
+      id: '',
+      diaSemana: 'Dia semana',
+      horario: horario,
+      tipoColeta: 'Tipo de coleta'
+
+    })
     setHidden(false);
   }
+
+
 
   function footerModalButtons() {
     return (
 
       <div className="modal-buttons">
-        <button onClick={closeModal}> <IoMdClose />Cancelar</button>
+        <button onClick={() => closeModal()}> <IoMdClose />Cancelar</button>
         <button type="submit" onClick={handleRegister} > <FiCheck />Agendar</button>
       </div>
     );
@@ -81,7 +108,9 @@ export default function Agendametos() {
     try {
       await api.post('agendamentos', data);
       alert('Novo agendamento cadastrado com sucesso');
+      atulizaCAmpos()
       closeModal();
+
     } catch (err) {
       alert('Aconteceu um erro');
       console.log(data);
@@ -89,9 +118,21 @@ export default function Agendametos() {
 
   }
 
+  // useEffect(() => {
+  //   async function update() {
+  //     const response = await api.get(`agendamentos/39`);
+  //     setAgendamento(response.data);
+  //     console.log(response.data);
+  //   }
+  //   update();
+  // }, [hidden])
+
   async function handleUptade(id) {
-    const res = await api.put(`agendamentos/${id}`);
-    console.log(res);
+
+    openModal();
+    const response = await api.get(`agendamentos/${id}`);
+    setAgendamento(response.data)
+    console.log(agendamento);
   }
 
   async function handlerDelete(id) {
@@ -107,12 +148,13 @@ export default function Agendametos() {
 
   return (
     <>
-      <Dialog visible={hidden} header={headerModal()} footer={footerModalButtons()} style={{ width: '45vw' }} onHide={closeModal}>
+      <Dialog visible={hidden} header={headerModal()} footer={footerModalButtons()} style={{ width: '45vw' }} onHide={() => closeModal()}>
         <div className="modal-container" >
           <form className="input-dialog" >
             <label >Dia da Coleta</label>
+
             <select name="dia" onChange={e => setDia(e.target.value)}>
-              <option value="" >Dia de semana</option>
+              <option value={agendamento.diaSemana} >{agendamento.diaSemana}</option>
               <option value="SEGUNDA">Segunda-Feira</option>
               <option value="TERCA">Terça-Feira</option>
               <option value="QUARTA">Quarta-Feira</option>
@@ -122,16 +164,14 @@ export default function Agendametos() {
               <option value="DOMINGO">Domingo</option>
             </select>
 
-            <div className="times">
-              <label>Das</label>
-              <input type="time" onChange={e => setHorario(e.target.value)} />
-              <label>Ás</label>
-              <input type="time" />
-            </div>
+
+            <label>Horario de Coleta</label>
+            <input type="text" value={agendamento.horario} onChange={e => setAgendamento({ ...agendamento, horario: e.target.value })} />
+
 
             <label >Bairro da Coleta</label>
             <select name="bairro" onChange={e => setBairroID(e.target.value)}>
-              <option value="">Selecione o bairro</option>
+              <option value="">{agendamento.bairro.nome}</option>
               {bairros.map(bairro => (
                 <option key={bairro.id} value={bairro.id}>{bairro.nome}</option>
               ))}
@@ -139,7 +179,7 @@ export default function Agendametos() {
 
             <label >Tipo de coleta</label>
             <select name="coleta" onChange={e => setTipoColeta(e.target.value)}>
-              <option value="">Tipo de coleta</option>
+              <option value={agendamento.tipoColeta}>{agendamento.tipoColeta}</option>
               <option value="COLETACOMUM">Coleta comum</option>
               <option value="COLETASELETIVA">Coleta seletiva</option>
             </select>
@@ -154,7 +194,7 @@ export default function Agendametos() {
 
           <div className="header">
             <h1>AGENDAMENTOS</h1>
-            <button onClick={openModal}><VscNewFile /></button>
+            <button onClick={() => openModal()}><VscNewFile /></button>
           </div>
           <section className="grid">
             <ul>

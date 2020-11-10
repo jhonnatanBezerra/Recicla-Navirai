@@ -110,26 +110,27 @@
   font-size: 15px;
 }
 
-.modal-container .input-dialog .times{
+/* .modal-container .input-dialog .times{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   flex: 1;
   margin-top: 15px;
   
-}
+} */
 
 .modal-container .input-dialog .times label{
   display: flex;
   margin: auto 10px;  
 }
 
-.modal-container .input-dialog .times input[type="time"]{
-  background-color: #f0f0f0f5; 
+.modal-container .input-dialog .times input{
+  background-color: #f0f0f0f5;
   border: 0;
   padding: 16px 24px;
-  width: 230px;
   color: black;
   border-radius: 8px;
+  
+
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
