@@ -1,5 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import ApiLocal from '../../services/ApiLocal';
 
 import './styles.css';
 import { RiRecycleFill } from 'react-icons/ri';
@@ -8,6 +9,48 @@ import { FiArrowLeft } from 'react-icons/fi';
 
 
 export default function Register() {
+
+  const history = useHistory();
+
+  const [departamentos, setDepartamentos] = useState([]);
+
+  const [gerencia, setGerencia] = useState();
+  const [user, setUser] = useState();
+  const [senha, setSenha] = useState();
+  const [email, setEmail] = useState();
+  const [cargo, setCargo] = useState();
+
+
+
+
+  useEffect(() => {
+    ApiLocal.get('departamentos').then(response => {
+      setDepartamentos(response.data);
+    });
+  }, []);
+
+  async function handleRegister(e) {
+    e.preventDefault(e);
+    const data = {
+      departamento: {
+        id: gerencia
+      },
+      nome: user,
+      email,
+      senha,
+      cargo,
+
+    }
+    try {
+      await ApiLocal.post('gestores', data);
+      alert('deu certo');
+      history.push('/');
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <div className="register-container">
 
@@ -26,13 +69,17 @@ export default function Register() {
         </section>
 
         <form>
-          <input placeholder="Nome de usuario" />
-          <input type="email" placeholder="E-mail" />
-          <input type="password" placeholder="Senha" />
-          <input placeholder="Departamento" />
-          {/* <option value="">Gerências Municipais</option> */}
-          <input placeholder="Cargo exercido" />
-          <button type="submit" >Cadastrar</button>
+          <input placeholder="Nome de usuario" onChange={e => setUser(e.target.value)} />
+          <input type="email" placeholder="E-mail" onChange={e => setEmail(e.target.value)} />
+          <input type="password" placeholder="Senha" onChange={e => setSenha(e.target.value)} />
+          <select onChange={e => setGerencia(e.target.value)}>
+            <option value="">Selecione uma Gerência</option>
+            {departamentos.map(gerencia => (
+              <option key={gerencia.id} value={gerencia.id}>{gerencia.nome}</option>
+            ))}
+          </select>
+          <input placeholder="Cargo exercido" onChange={e => setCargo(e.target.value)} />
+          <button type="submit" onClick={handleRegister}>Cadastrar</button>
         </form>
       </div>
     </div>

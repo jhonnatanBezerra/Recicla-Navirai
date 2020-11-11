@@ -45,7 +45,7 @@ export default function Agendametos() {
       setBairros(response.data);
     }, []);
     atulizaCAmpos();
-  }, [])
+  }, []);
 
 
   // Funções do Modal
@@ -55,7 +55,7 @@ export default function Agendametos() {
   }
 
   function closeModal() {
-    setHorario('Informe o horario de coleta');
+    setHorario('');
     setAgendamento({
       bairro: {
         id: '',
@@ -166,7 +166,7 @@ export default function Agendametos() {
 
 
             <label>Horario de Coleta</label>
-            <input type="text" value={agendamento.horario} onChange={e => setAgendamento({ ...agendamento, horario: e.target.value })} />
+            <input type="text" value={agendamento.horario} placeholder="Informe o horario de coleta" onChange={e => setAgendamento({ ...agendamento, horario: e.target.value })} />
 
 
             <label >Bairro da Coleta</label>

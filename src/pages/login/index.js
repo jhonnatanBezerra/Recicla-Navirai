@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+
 import api from '../../services/ApiLocal';
 import { Toast } from 'primereact/toast';
 
@@ -52,7 +53,7 @@ export default function Login() {
             <input placeholder="E-mail" value={email} onChange={e => setEmail(e.target.value)} />
             <input type="password" placeholder="Senha" value={senha} onChange={e => setSenha(e.target.value)} />
             <button type="submit">Entrar</button>
-            <Link to="/registro-usuario"> <FiLogIn size={26} /> Não tenho cadastro</Link>
+            <Link to="/register"> <FiLogIn size={26} /> Não tenho cadastro</Link>
           </form>
         </section>
 
