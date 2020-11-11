@@ -14,37 +14,30 @@ import './styles.css';
 export default function Agendametos() {
 
   const [hidden, setHidden] = useState(false);
-  const [bairros, setBairros] = useState([]);
-  const [agendamentos, setAgendamentos] = useState([]);
 
-  const [diaSemana, setDia] = useState('');
+  const [listBairros, setListBairros] = useState([]);
+  const [listAgendamentos, setListAgendamentos] = useState([]);
+
+  const [agendamentoID, setAgendamentoID] = useState();
+
+  const [diaSemana, setDiaSemana] = useState('');
   const [bairroID, setBairroID] = useState('');
+  const [bairroNome, setBairroNome] = useState('');
   const [horario, setHorario] = useState('');
   const [tipoColeta, setTipoColeta] = useState('');
 
-  const [agendamento, setAgendamento] = useState({
-    bairro: {
-      id: '',
-      nome: 'Selecione o Bairro',
-    },
-    id: '',
-    diaSemana: 'Dia semana',
-    horario: horario,
-    tipoColeta: 'Tipo de coleta'
-  })
 
-
-  async function atulizaCAmpos() {
+  async function buscaAgendamentos() {
     const response = await api.get('agendamentos')
-    setAgendamentos(response.data);
+    setListAgendamentos(response.data);
   }
 
   useEffect(() => {
 
     api.get('bairros').then(response => {
-      setBairros(response.data);
+      setListBairros(response.data);
     }, []);
-    atulizaCAmpos();
+    buscaAgendamentos();
   }, []);
 
 
@@ -55,19 +48,8 @@ export default function Agendametos() {
   }
 
   function closeModal() {
-    setHorario('');
-    setAgendamento({
-      bairro: {
-        id: '',
-        nome: 'Selecione o Bairro',
-      },
-      id: '',
-      diaSemana: 'Dia semana',
-      horario: horario,
-      tipoColeta: 'Tipo de coleta'
-
-    })
     setHidden(false);
+    resetStats();
   }
 
 
@@ -77,7 +59,7 @@ export default function Agendametos() {
 
       <div className="modal-buttons">
         <button onClick={() => closeModal()}> <IoMdClose />Cancelar</button>
-        <button type="submit" onClick={handleRegister} > <FiCheck />Agendar</button>
+        <button type="submit" onClick={agendamentoID ? handleUpdate : handleRegister} > <FiCheck />{agendamentoID ? 'Atualizar' : 'Agendar'}</button>
       </div>
     );
 
@@ -98,7 +80,7 @@ export default function Agendametos() {
 
     const data = {
       bairro: {
-        "id": bairroID
+        id: bairroID
       },
       diaSemana,
       horario,
@@ -108,42 +90,75 @@ export default function Agendametos() {
     try {
       await api.post('agendamentos', data);
       alert('Novo agendamento cadastrado com sucesso');
-      atulizaCAmpos()
+      buscaAgendamentos();
       closeModal();
 
     } catch (err) {
       alert('Aconteceu um erro');
-      console.log(data);
+
     }
 
   }
 
-  // useEffect(() => {
-  //   async function update() {
-  //     const response = await api.get(`agendamentos/39`);
-  //     setAgendamento(response.data);
-  //     console.log(response.data);
-  //   }
-  //   update();
-  // }, [hidden])
+  async function handleUpdate(e) {
+    e.preventDefault();
 
-  async function handleUptade(id) {
+    const data = {
+      bairro: {
+        id: bairroID
+      },
+      diaSemana,
+      horario,
+      tipoColeta,
+    };
+
+    try {
+      await api.put(`agendamentos/${agendamentoID}`, data);
+      alert('Agendamento Atualizado com sucesso');
+      buscaAgendamentos();
+      closeModal();
+
+    } catch (err) {
+      alert('Aconteceu um erro');
+      console.log('Arquivos : ', data);
+    }
+    buscaAgendamentos();
+
+  }
+
+  async function buscarAgendamento(id) {
+    const response = await api.get(`agendamentos/${id}`);
+    setAgendamentoID(response.data.id);
+    setDiaSemana(response.data.diaSemana);
+    setBairroNome(response.data.bairro.nome);
+    setBairroID(response.data.bairro.id);
+    setHorario(response.data.horario);
+    setTipoColeta(response.data.tipoColeta);
+
+    console.log(diaSemana);
 
     openModal();
-    const response = await api.get(`agendamentos/${id}`);
-    setAgendamento(response.data)
-    console.log(agendamento);
+
   }
+
 
   async function handlerDelete(id) {
     try {
       await api.delete(`agendamentos/${id}`);
       alert('Agendamento deletado com sucesso');
-
-      setAgendamentos(agendamentos.filter(agendamento => agendamento.id !== id)); // removendo em tempo real o que foi excluido
+      buscaAgendamentos();
     } catch (err) {
       alert('Erro ao deletar, tente novamente mais tarde');
     }
+  }
+
+  function resetStats() {
+    setAgendamentoID('');
+    setDiaSemana('');
+    setBairroID('');
+    setBairroNome('');
+    setHorario('');
+    setTipoColeta('');
   }
 
   return (
@@ -153,8 +168,8 @@ export default function Agendametos() {
           <form className="input-dialog" >
             <label >Dia da Coleta</label>
 
-            <select name="dia" onChange={e => setDia(e.target.value)}>
-              <option value={agendamento.diaSemana} >{agendamento.diaSemana}</option>
+            <select name="dia" onChange={e => setDiaSemana(e.target.value)}>
+              <option value={diaSemana.value} >{diaSemana ? diaSemana : 'Dia da semana'}</option>
               <option value="SEGUNDA">Segunda-Feira</option>
               <option value="TERCA">Terça-Feira</option>
               <option value="QUARTA">Quarta-Feira</option>
@@ -166,20 +181,20 @@ export default function Agendametos() {
 
 
             <label>Horario de Coleta</label>
-            <input type="text" value={agendamento.horario} placeholder="Informe o horario de coleta" onChange={e => setAgendamento({ ...agendamento, horario: e.target.value })} />
+            <input type="text" value={horario ? horario : ''} placeholder="Informe o horario de coleta" onChange={e => setHorario(e.target.value)} />
 
 
             <label >Bairro da Coleta</label>
             <select name="bairro" onChange={e => setBairroID(e.target.value)}>
-              <option value="">{agendamento.bairro.nome}</option>
-              {bairros.map(bairro => (
+              <option value={bairroID}>{bairroNome ? bairroNome : 'Selecione o Bairro'}</option>
+              {listBairros.map(bairro => (
                 <option key={bairro.id} value={bairro.id}>{bairro.nome}</option>
               ))}
             </select>
 
             <label >Tipo de coleta</label>
             <select name="coleta" onChange={e => setTipoColeta(e.target.value)}>
-              <option value={agendamento.tipoColeta}>{agendamento.tipoColeta}</option>
+              <option value={tipoColeta}>{tipoColeta ? tipoColeta : 'Selecione o Tipo de Coleta'}</option>
               <option value="COLETACOMUM">Coleta comum</option>
               <option value="COLETASELETIVA">Coleta seletiva</option>
             </select>
@@ -199,7 +214,7 @@ export default function Agendametos() {
           <section className="grid">
             <ul>
 
-              {agendamentos.map(agendamento => (
+              {listAgendamentos.map(agendamento => (
                 <li key={agendamento.id}>
                   <strong>Dia de Coleta</strong>
                   <p>{agendamento.diaSemana}</p>
@@ -214,7 +229,7 @@ export default function Agendametos() {
                   <p>{agendamento.tipoColeta}</p>
 
                   <div className="icons">
-                    <button onClick={() => handleUptade(agendamento.id)}>
+                    <button onClick={() => buscarAgendamento(agendamento.id)}>
                       <FiEdit />
                     </button>
 
