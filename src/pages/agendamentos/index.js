@@ -93,9 +93,10 @@ export default function Agendametos() {
       buscaAgendamentos();
       closeModal();
 
+
     } catch (err) {
       alert('Aconteceu um erro');
-
+      console.log(data);
     }
 
   }
@@ -119,7 +120,8 @@ export default function Agendametos() {
       closeModal();
 
     } catch (err) {
-      alert('Aconteceu um erro');
+      alert(err.response.data.error);
+      // console.log(err.response.data);
       console.log('Arquivos : ', data);
     }
     buscaAgendamentos();
@@ -135,7 +137,7 @@ export default function Agendametos() {
     setHorario(response.data.horario);
     setTipoColeta(response.data.tipoColeta);
 
-    console.log(diaSemana);
+    console.log(response);
 
     openModal();
 
@@ -168,20 +170,20 @@ export default function Agendametos() {
           <form className="input-dialog" >
             <label >Dia da Coleta</label>
 
-            <select name="dia" onChange={e => setDiaSemana(e.target.value)}>
-              <option value={diaSemana.value} >{diaSemana ? diaSemana : 'Dia da semana'}</option>
-              <option value="SEGUNDA">Segunda-Feira</option>
-              <option value="TERCA">Terça-Feira</option>
-              <option value="QUARTA">Quarta-Feira</option>
-              <option value="QUINTA">Quinta-Feira</option>
-              <option value="SEXTA">Sexta-Feira</option>
-              <option value="SABADO">Sabado</option>
-              <option value="DOMINGO">Domingo</option>
+            <select name="diaSemana" onChange={e => setDiaSemana(e.target.value)}>
+              <option value={diaSemana}>{diaSemana ? diaSemana : 'Selecione o dia da semana'}</option>
+              <option value="Segunda-feira">Segunda-feira</option>
+              <option value="Terça-feira">Terça-feira</option>
+              <option value="Quarta-feira">Quarta-feira</option>
+              <option value="Quinta-feira">Quinta-feira</option>
+              <option value="Sexta-feira">Sexta-feira</option>
+              <option value="Sábado">Sábado</option>
+              <option value="Domingo">Domingo</option>
             </select>
 
 
             <label>Horario de Coleta</label>
-            <input type="text" value={horario ? horario : ''} placeholder="Informe o horario de coleta" onChange={e => setHorario(e.target.value)} />
+            <input type="text" value={horario ? horario : ''} placeholder="Ex: das 00:00 as 13:30" onChange={e => setHorario(e.target.value)} />
 
 
             <label >Bairro da Coleta</label>
@@ -194,9 +196,9 @@ export default function Agendametos() {
 
             <label >Tipo de coleta</label>
             <select name="coleta" onChange={e => setTipoColeta(e.target.value)}>
-              <option value={tipoColeta}>{tipoColeta ? tipoColeta : 'Selecione o Tipo de Coleta'}</option>
-              <option value="COLETACOMUM">Coleta comum</option>
-              <option value="COLETASELETIVA">Coleta seletiva</option>
+              <option value={tipoColeta.value}>{tipoColeta ? tipoColeta : 'Selecione o Tipo de Coleta'}</option>
+              <option value="Coleta Comum">Coleta comum</option>
+              <option value="Coleta Seletiva">Coleta seletiva</option>
             </select>
 
           </form>
