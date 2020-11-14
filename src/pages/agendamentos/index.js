@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Header from '../../components/header'
 import api from '../../services/ApiSwagger';
+import { Toast } from 'primereact/toast';
 
 import { FiTrash2, FiCheck, FiEdit } from 'react-icons/fi'
 import { VscNewFile } from 'react-icons/vsc';
@@ -13,6 +14,7 @@ import './styles.css';
 
 export default function Agendametos() {
 
+  const tost = useRef(null);
   const [hidden, setHidden] = useState(false);
 
   const [listBairros, setListBairros] = useState([]);
@@ -89,16 +91,17 @@ export default function Agendametos() {
 
     try {
       await api.post('agendamentos', data);
-      alert('Novo agendamento cadastrado com sucesso');
+      showTost('success', 'Agendamento salvo com sucesso !!!', 'Maravilha !')
       buscaAgendamentos();
       closeModal();
 
-
     } catch (err) {
-      alert('Aconteceu um erro');
-      console.log(data);
+      showTost('error', err.response.data, 'Falha');
     }
 
+  }
+  function showTost(type, msg, title) {
+    tost.current.show({ severity: type, summary: title, detail: msg, life: 3000 });
   }
 
   async function handleUpdate(e) {
@@ -115,18 +118,17 @@ export default function Agendametos() {
 
     try {
       await api.put(`agendamentos/${agendamentoID}`, data);
-      alert('Agendamento Atualizado com sucesso');
+      showTost('success', 'Agendamento atualizado com sucesso !!!', 'Maravilha !')
       buscaAgendamentos();
       closeModal();
 
     } catch (err) {
-      alert(err.response.data.error);
-      // console.log(err.response.data);
-      console.log('Arquivos : ', data);
+      showTost('error', err.response.data, 'Falha');
+
     }
-    buscaAgendamentos();
 
   }
+
 
   async function buscarAgendamento(id) {
     const response = await api.get(`agendamentos/${id}`);
@@ -150,7 +152,7 @@ export default function Agendametos() {
       alert('Agendamento deletado com sucesso');
       buscaAgendamentos();
     } catch (err) {
-      alert('Erro ao deletar, tente novamente mais tarde');
+      showTost('error', err.response.data, 'Falha');
     }
   }
 
@@ -165,6 +167,7 @@ export default function Agendametos() {
 
   return (
     <>
+      <Toast ref={tost}></Toast>
       <Dialog visible={hidden} header={headerModal()} footer={footerModalButtons()} style={{ width: '45vw' }} onHide={() => closeModal()}>
         <div className="modal-container" >
           <form className="input-dialog" >

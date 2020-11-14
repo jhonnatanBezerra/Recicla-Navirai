@@ -182,3 +182,33 @@
   border-radius: 8px;
   margin-right: 10px;
 }
+
+.modal-excluir{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.modal-excluir button{
+  align-content: center;
+  text-align: center;
+  font-weight: bold;
+  background: transparent;
+  font-weight: bold;
+  padding: 0 10px;
+  height: 35px;
+}
+
+.modal-excluir button svg{
+  align-items: center;
+  margin-top: 1px;
+  margin-right: 8px;
+}
+
+.modal-excluir button + button{
+  color: #f0f0f0;
+  background: #ec1e0f;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  margin-right: 10px;
+}

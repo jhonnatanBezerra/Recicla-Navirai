@@ -35,7 +35,7 @@ export default function CompHeader() {
       </nav>
 
       <div className="user-status">
-        <Link>{usuario}</Link>
+        <Link to="agendamentos">{usuario}</Link>
         <button onClick={handleLogOut}><FiLogOut /></button>
       </div>
     </header>
