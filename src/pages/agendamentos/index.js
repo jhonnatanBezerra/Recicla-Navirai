@@ -138,9 +138,6 @@ export default function Agendametos() {
     setBairroID(response.data.bairro.id);
     setHorario(response.data.horario);
     setTipoColeta(response.data.tipoColeta);
-
-    console.log(response);
-
     openModal();
 
   }
