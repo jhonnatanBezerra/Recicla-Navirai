@@ -155,7 +155,7 @@ export default function Agendametos() {
       showTost('error', err.response.data, 'Falha');
     }
   }
-
+  
   function resetStats() {
     setAgendamentoID('');
     setDiaSemana('');

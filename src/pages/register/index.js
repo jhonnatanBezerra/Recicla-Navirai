@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import ApiLocal from '../../services/ApiLocal';
+import api from '../../services/ApiSwagger';
 
 import './styles.css';
 import { RiRecycleFill } from 'react-icons/ri';
@@ -24,7 +24,7 @@ export default function Register() {
 
 
   useEffect(() => {
-    ApiLocal.get('departamentos').then(response => {
+    api.get('departamentos').then(response => {
       setDepartamentos(response.data);
     });
   }, []);
@@ -42,7 +42,7 @@ export default function Register() {
 
     }
     try {
-      await ApiLocal.post('gestores', data);
+      await api.post('gestores', data);
       alert('deu certo');
       history.push('/');
 

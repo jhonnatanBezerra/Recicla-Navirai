@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import api from '../../services/ApiLocal';
+import api from '../../services/ApiSwagger';
 import { Toast } from 'primereact/toast';
 
 import './styles.css';
