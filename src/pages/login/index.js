@@ -30,6 +30,7 @@ export default function Login() {
     try {
       const response = await api.post('gestores/autenticar', data);
       localStorage.setItem('usuario', response.data.nome);
+      localStorage.setItem('id', response.data.id);
       history.push('/agendamentos');
     } catch (err) {
       showTost(err.response.data);
