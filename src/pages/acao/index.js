@@ -200,7 +200,7 @@ export default function Acao() {
 
             <textarea type="text" value={description ? description : ''} placeholder="Descrição" onChange={e => setDescription(e.target.value)} />
 
-            <input type="file" multiple onChange={e => setFile(e.target.value)} />
+            <input type="file" onChange={e => setFile(e.target.value)} />
 
           </form>
         </div>
