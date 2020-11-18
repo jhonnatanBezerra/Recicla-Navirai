@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Header from '../../components/header';
+import api from '../../services/ApiSwagger';
 
 import { VscNewFile } from 'react-icons/vsc';
 import { IoMdClose } from 'react-icons/io'
@@ -7,13 +8,62 @@ import { FiEdit, FiCheck } from 'react-icons/fi'
 import './styles.css';
 
 import { Dialog } from 'primereact/dialog';
+import { Toast } from 'primereact/toast';
 
 
 
 export default function Educacao() {
 
-
+  const tost = useRef(null);
   const [hidden, setHidden] = useState(false);
+
+  const usuarioID = localStorage.getItem('id');
+
+  const [listEducacao, setListEducacao] = useState([]);
+
+
+  const [data, setData] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [file, setFile] = useState([]);
+  const [titulo, setTitulo] = useState('');
+
+  useEffect(() => {
+
+    buscarEdu();
+  }, []);
+
+  async function buscarEdu() {
+    const response = await api.get('educacoes');
+    setListEducacao(response.data);
+  }
+
+  async function handleRegister(e) {
+    e.preventDefault();
+
+    const dados = {
+      data,
+      titulo,
+      descricao,
+      gestor: {
+        id: usuarioID,
+      },
+
+      fotos: [
+        file
+      ]
+    };
+
+    try {
+      await api.post('educacoes', dados);
+      showTost('success', 'Informativo salvo com sucesso !!!', 'Maravilha !')
+      buscarEdu();
+      closeModal();
+
+    } catch (err) {
+      showTost('error', err.response.data, 'Falha');
+    }
+
+  }
 
   function openModal() {
     setHidden(true);
@@ -21,6 +71,7 @@ export default function Educacao() {
 
   function closeModal() {
     setHidden(false);
+    resetStats();
   }
 
   function footerModalButtons() {
@@ -28,7 +79,7 @@ export default function Educacao() {
 
       <div className="modal-buttons">
         <button onClick={closeModal}> <IoMdClose />Cancelar</button>
-        <button type="submit" > <FiCheck />Cadastrar</button>
+        <button type="submit" onClick={handleRegister} > <FiCheck />Cadastrar</button>
       </div>
     );
 
@@ -42,19 +93,33 @@ export default function Educacao() {
     )
   }
 
+  function resetStats() {
+    setData('');
+    setDescricao('');
+    setFile([]);
+    setTitulo('');
+  }
+
+  function showTost(type, msg, title) {
+    tost.current.show({ severity: type, summary: title, detail: msg, life: 3000 });
+  }
+
 
   return (
     <>
+      <Toast ref={tost}></Toast>
       <Dialog visible={hidden} header={headerModal()} footer={footerModalButtons()} style={{ width: '45vw' }} onHide={closeModal}>
         <div className="modal-container" >
           <form className="input-dialog">
-            <input type="date" placeholder="" />
-            <input type="text" placeholder="Titulo da materia" />
-            <textarea type="text" placeholder="Descrição" />
-            <select >
-              <option value="">Gestão responsavel</option>
-            </select>
-            <input type="file" placeholder="" />
+
+            <input type="date" onChange={e => setData(e.target.value)} />
+
+            <input type="text" onChange={e => setTitulo(e.target.value)} placeholder="Titulo da materia" />
+
+            <textarea type="text" onChange={e => setDescricao(e.target.value)} placeholder="Descrição" />
+
+            <input type="file" onChange={e => setFile(e.target.value)} placeholder="" />
+
           </form>
         </div>
       </Dialog>
@@ -69,22 +134,24 @@ export default function Educacao() {
           </div>
           <section className="grid">
             <ul>
-              <li>
-                <strong>Data</strong>
-                <p>22/12/2020</p>
+              {listEducacao.map(edu => (
 
-                <strong>Titulo</strong>
-                <p>Como fazer compostagem doméstica: um passo a passo</p>
 
-                <strong>Autor</strong>
-                <p>Gerencia de Meio Ambiente</p>
+                <li key={edu.id}>
+                  <strong>Data</strong>
+                  <p>{edu.data}</p>
 
-                <div className="icons">
-                  <button>
-                    <FiEdit />
-                  </button>
-                </div>
-              </li>
+                  <strong>Titulo</strong>
+                  <p>{edu.titulo}</p>
+                  <strong>Autor</strong>
+                  <p>{edu.gestor.departamento.nome}</p>
+                  <div className="icons">
+                    <button>
+                      <FiEdit />
+                    </button>
+                  </div>
+                </li>
+              ))}
             </ul>
 
           </section>
