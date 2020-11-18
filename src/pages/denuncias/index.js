@@ -30,7 +30,7 @@ export default function Denuncias() {
             <ul>
               {listDenuncias.map(denuncia => (
 
-                <li>
+                <li key={denuncia.id}>
                   <strong>Denuncia ID</strong>
                   <p>{denuncia.id}</p>
 
