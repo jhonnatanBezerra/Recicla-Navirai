@@ -1,8 +1,19 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../../components/header';
+import api from '../../services/ApiSwagger';
 
 
 export default function Denuncias() {
+
+  const [listDenuncias, setListDenuncias] = useState([]);
+
+
+  useEffect(() => {
+
+    api.get('denuncias').then(response => {
+      setListDenuncias(response.data);
+    }, []);
+  }, []);
 
 
   return (
@@ -17,19 +28,23 @@ export default function Denuncias() {
           </div>
           <section className="grid">
             <ul>
-              <li>
-                <strong>Data</strong>
-                <p>22/12/2020</p>
+              {listDenuncias.map(denuncia => (
 
-                <strong>Denuncia</strong>
-                <p>Descarte Ilegal</p>
+                <li>
+                  <strong>Denuncia ID</strong>
+                  <p>{denuncia.id}</p>
 
-                <strong>Imagem / Prova</strong>
-                <p>Imagem aqui</p>
+                  <strong>Denuncia</strong>
+                  <p>{denuncia.descricao}</p>
 
-                <strong>Bairro</strong>
-                <p>Sol Nascente</p>
-              </li>
+                  <strong>Imagem / Prova</strong>
+                  <p>{denuncia.fotos}</p>
+
+                  <strong>Bairro</strong>
+                  <p>{denuncia.bairro.nome}</p>
+                </li>
+
+              ))}
             </ul>
 
           </section>
