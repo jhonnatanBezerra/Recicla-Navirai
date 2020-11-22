@@ -4,7 +4,7 @@ import api from '../../services/ApiSwagger';
 
 import { VscNewFile } from 'react-icons/vsc';
 import { IoMdClose } from 'react-icons/io'
-import { FiEdit, FiCheck } from 'react-icons/fi'
+import { FiEdit, FiCheck, FiTrash2 } from 'react-icons/fi'
 import './styles.css';
 
 import { Dialog } from 'primereact/dialog';
@@ -26,15 +26,48 @@ export default function Educacao() {
   const [descricao, setDescricao] = useState('');
   const [file, setFile] = useState([]);
   const [titulo, setTitulo] = useState('');
+  const [eduID, setEduID] = useState('');
+
+
+  async function buscarEdus() {
+    const response = await api.get('educacoes');
+    setListEducacao(response.data);
+  }
 
   useEffect(() => {
 
-    buscarEdu();
+    buscarEdus();
   }, []);
 
-  async function buscarEdu() {
-    const response = await api.get('educacoes');
-    setListEducacao(response.data);
+
+  function openModal() {
+    setHidden(true);
+  }
+
+  function closeModal() {
+    setHidden(false);
+    resetStats();
+  }
+
+
+  function footerModalButtons() {
+    return (
+
+      <div className="modal-buttons">
+        <button onClick={closeModal}> <IoMdClose />Cancelar</button>
+        <button type="submit" onClick={eduID ? handleUpdate : handleRegister} > <FiCheck />{eduID ? 'Atualizar' : 'Cadastrar'}</button>
+      </div>
+    );
+
+  }
+
+
+  function headerModal() {
+    return (
+      < div classNames="header-modal">
+        <h1>Novo Registro</h1>
+      </div>
+    )
   }
 
   async function handleRegister(e) {
@@ -56,7 +89,7 @@ export default function Educacao() {
     try {
       await api.post('educacoes', dados);
       showTost('success', 'Informativo salvo com sucesso !!!', 'Maravilha !')
-      buscarEdu();
+      buscarEdus();
       closeModal();
 
     } catch (err) {
@@ -65,32 +98,57 @@ export default function Educacao() {
 
   }
 
-  function openModal() {
-    setHidden(true);
+
+  function showTost(type, msg, title) {
+    tost.current.show({ severity: type, summary: title, detail: msg, life: 3000 });
   }
 
-  function closeModal() {
-    setHidden(false);
-    resetStats();
-  }
-
-  function footerModalButtons() {
-    return (
-
-      <div className="modal-buttons">
-        <button onClick={closeModal}> <IoMdClose />Cancelar</button>
-        <button type="submit" onClick={handleRegister} > <FiCheck />Cadastrar</button>
-      </div>
-    );
+  async function buscarEdu(id) {
+    const response = await api.get(`educacoes/${id}`);
+    setEduID(response.data.id);
+    setData(response.data.data);
+    setTitulo(response.data.titulo);
+    setDescricao(response.data.descricao);
+    setFile(response.data.fotos);
+    openModal();
 
   }
 
-  function headerModal() {
-    return (
-      < div classNames="header-modal">
-        <h1>Novo Registro</h1>
-      </div>
-    )
+  async function handleUpdate(e){
+    e.preventDefault();
+
+    const dados = {
+      data,
+      titulo,
+      descricao,
+      gestor: {
+        id: usuarioID,
+      },
+
+      fotos: [
+        file
+      ]
+    };
+
+    try {
+      await api.put(`educacoes/${eduID}`, dados);
+      showTost('success', 'Informativo salvo com sucesso !!!', 'Maravilha !')
+      buscarEdus();
+      closeModal();
+
+    } catch (err) {
+      showTost('error', err.response.data, 'Falha');
+    }
+  }
+
+  async function handlerDelete(id) {
+    try {
+      await api.delete(`educacoes/${id}`);
+      showTost('success', 'Informativo deletado com sucesso !!!', 'Maravilha !')
+      buscarEdus();
+    } catch (err) {
+      showTost('error', err.response.data, 'Falha');
+    }
   }
 
   function resetStats() {
@@ -98,11 +156,9 @@ export default function Educacao() {
     setDescricao('');
     setFile([]);
     setTitulo('');
+    setEduID('');
   }
 
-  function showTost(type, msg, title) {
-    tost.current.show({ severity: type, summary: title, detail: msg, life: 3000 });
-  }
 
 
   return (
@@ -112,11 +168,11 @@ export default function Educacao() {
         <div className="modal-container" >
           <form className="input-dialog">
 
-            <input type="date" onChange={e => setData(e.target.value)} />
+            <input type="date" value={data} onChange={e => setData(e.target.value)} />
 
-            <input type="text" onChange={e => setTitulo(e.target.value)} placeholder="Titulo da materia" />
+            <input type="text" value={titulo} onChange={e => setTitulo(e.target.value)} placeholder="Titulo da materia" />
 
-            <textarea type="text" onChange={e => setDescricao(e.target.value)} placeholder="Descrição" />
+            <textarea type="text"  value={descricao} onChange={e => setDescricao(e.target.value)} placeholder="Descrição" />
 
             <input type="file" onChange={e => setFile(e.target.value)} placeholder="" />
 
@@ -146,8 +202,11 @@ export default function Educacao() {
                   <strong>Autor</strong>
                   <p>{edu.gestor.departamento.nome}</p>
                   <div className="icons">
-                    <button>
+                    <button onClick={() => buscarEdu(edu.id)}>
                       <FiEdit />
+                    </button>
+                    <button onClick={() => handlerDelete(edu.id)}>
+                      <FiTrash2 />
                     </button>
                   </div>
                 </li>

@@ -72,8 +72,6 @@ export default function Acao() {
   async function handleCreate(e) {
     e.preventDefault();
 
-
-
     const dados = {
       gestor: {
         id: usuarioID
@@ -95,14 +93,13 @@ export default function Acao() {
 
     try {
       await api.post('acoes', dados);
-      console.log(dados);
+      
       buscarAcoes();
       showTost('success', 'Ação salva com sucesso !!!', 'Maravilha !')
       closeModal();
 
-    } catch (err) {
-      console.log(dados);
-      // showTost('error', err.response.data, 'Falha');
+    } catch (err) {      
+      showTost('error', err.response.data, 'Falha');
     }
 
   }
@@ -177,6 +174,7 @@ export default function Acao() {
     setDescription('');
     setBairroID('');
     setFile([]);
+    setBairroNome('');
   }
 
   return (

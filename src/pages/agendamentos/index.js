@@ -100,6 +100,7 @@ export default function Agendametos() {
     }
 
   }
+
   function showTost(type, msg, title) {
     tost.current.show({ severity: type, summary: title, detail: msg, life: 3000 });
   }
@@ -146,13 +147,13 @@ export default function Agendametos() {
   async function handlerDelete(id) {
     try {
       await api.delete(`agendamentos/${id}`);
-      alert('Agendamento deletado com sucesso');
+      showTost('success', 'Agendamento deletado com sucesso !!!', 'Maravilha !')
       buscaAgendamentos();
     } catch (err) {
       showTost('error', err.response.data, 'Falha');
     }
   }
-  
+
   function resetStats() {
     setAgendamentoID('');
     setDiaSemana('');
