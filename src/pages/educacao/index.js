@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Header from '../../components/header';
 import api from '../../services/ApiSwagger';
+import { format } from 'date-fns';
 
 import { VscNewFile } from 'react-icons/vsc';
 import { IoMdClose } from 'react-icons/io'
@@ -73,6 +74,7 @@ export default function Educacao() {
   async function handleRegister(e) {
     e.preventDefault();
 
+
     const dados = {
       data,
       titulo,
@@ -81,20 +83,25 @@ export default function Educacao() {
         id: usuarioID,
       },
 
-      fotos: [
-        file
-      ]
+      fotos: file
+
     };
 
-    try {
-      await api.post('educacoes', dados);
-      showTost('success', 'Informativo salvo com sucesso !!!', 'Maravilha !')
-      buscarEdus();
-      closeModal();
+    if (data) {
 
-    } catch (err) {
-      showTost('error', err.response.data, 'Falha');
+      try {
+        await api.post('educacoes', dados);
+        showTost('success', 'Informativo salvo com sucesso !!!', 'Maravilha !')
+        buscarEdus();
+        closeModal();
+
+      } catch (err) {
+        showTost('error', err.response.data, 'Falha');
+      }
+    } else {
+      showTost('error', 'Preencha todos os campos', 'Falha');
     }
+
 
   }
 
@@ -105,6 +112,7 @@ export default function Educacao() {
 
   async function buscarEdu(id) {
     const response = await api.get(`educacoes/${id}`);
+
     setEduID(response.data.id);
     setData(response.data.data);
     setTitulo(response.data.titulo);
@@ -114,7 +122,7 @@ export default function Educacao() {
 
   }
 
-  async function handleUpdate(e){
+  async function handleUpdate(e) {
     e.preventDefault();
 
     const dados = {
@@ -125,10 +133,11 @@ export default function Educacao() {
         id: usuarioID,
       },
 
-      fotos: [
-        file
-      ]
+      fotos: file
+      
     };
+
+
 
     try {
       await api.put(`educacoes/${eduID}`, dados);
@@ -157,9 +166,10 @@ export default function Educacao() {
     setFile([]);
     setTitulo('');
     setEduID('');
+
   }
 
-
+  console.log(file);
 
   return (
     <>
@@ -172,7 +182,7 @@ export default function Educacao() {
 
             <input type="text" value={titulo} onChange={e => setTitulo(e.target.value)} placeholder="Titulo da materia" />
 
-            <textarea type="text"  value={descricao} onChange={e => setDescricao(e.target.value)} placeholder="Descrição" />
+            <textarea type="text" value={descricao} onChange={e => setDescricao(e.target.value)} placeholder="Descrição" />
 
             <input type="file" onChange={e => setFile(e.target.value)} placeholder="" />
 
@@ -195,7 +205,7 @@ export default function Educacao() {
 
                 <li key={edu.id}>
                   <strong>Data</strong>
-                  <p>{edu.data}</p>
+                  <p>{format(new Date(edu.data), 'dd/MM/yyyy')}</p>
 
                   <strong>Titulo</strong>
                   <p>{edu.titulo}</p>

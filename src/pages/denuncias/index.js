@@ -37,8 +37,8 @@ export default function Denuncias() {
                   <strong>Denuncia</strong>
                   <p>{denuncia.descricao}</p>
 
-                  <strong>Imagem / Prova</strong>
-                  <p>{denuncia.fotos}</p>
+                  {/* <strong>Imagem / Prova</strong>
+                  <p>{denuncia.fotos}</p> */}
 
                   <strong>Bairro</strong>
                   <p>{denuncia.bairro.nome}</p>

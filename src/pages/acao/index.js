@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Header from '../../components/header';
 import api from '../../services/ApiSwagger';
 import { Toast } from 'primereact/toast';
+import { format } from 'date-fns';
 
 import { VscNewFile } from 'react-icons/vsc';
 import { IoMdClose } from 'react-icons/io'
@@ -85,20 +86,20 @@ export default function Acao() {
       descricao: description,
       titulo: title,
 
-      fotos: [
-        file,
-      ]
+      fotos: file,
 
     };
 
+
+
     try {
       await api.post('acoes', dados);
-      
+
       buscarAcoes();
       showTost('success', 'Ação salva com sucesso !!!', 'Maravilha !')
       closeModal();
 
-    } catch (err) {      
+    } catch (err) {
       showTost('error', err.response.data, 'Falha');
     }
 
@@ -122,7 +123,7 @@ export default function Acao() {
     setDescription(response.data.descricao);
     setBairroID(response.data.bairro.id);
     setBairroNome(response.data.bairro.nome);
-    setFile(response.data.foto);
+    setFile(response.data.fotos);
 
 
 
@@ -145,9 +146,10 @@ export default function Acao() {
       date: data,
       descricao: description,
       titulo: title,
-      foto: file,
+      fotos: file,
 
     };
+
 
     try {
       await api.put(`acoes/${acaoID}`, dados);
@@ -157,7 +159,6 @@ export default function Acao() {
 
     } catch (err) {
       showTost('error', err.response.data, 'Falha');
-
     }
 
   }
@@ -217,7 +218,7 @@ export default function Acao() {
               {listAcoes.map(acao => (
                 <li key={acao.id}>
                   <strong>Data</strong>
-                  <p>{acao.date}</p>
+                  <p>{format(new Date(acao.date), 'dd/MM/yyyy')}</p>
 
                   <strong>Titulo</strong>
                   <p>{acao.titulo}</p>

@@ -88,6 +88,7 @@ export default function Agendametos() {
       horario,
       tipoColeta,
     };
+    
 
     try {
       await api.post('agendamentos', data);
@@ -98,7 +99,6 @@ export default function Agendametos() {
     } catch (err) {
       showTost('error', err.response.data, 'Falha');
     }
-
   }
 
   function showTost(type, msg, title) {
@@ -172,7 +172,7 @@ export default function Agendametos() {
             <label >Dia da Coleta</label>
 
             <select name="diaSemana" onChange={e => setDiaSemana(e.target.value)}>
-              <option value={diaSemana}>{diaSemana ? diaSemana : 'Selecione o dia da semana'}</option>
+              <option value={diaSemana ? diaSemana : ''}>{diaSemana ? diaSemana : 'Selecione o dia da semana'}</option>
               <option value="Segunda-feira">Segunda-feira</option>
               <option value="Terça-feira">Terça-feira</option>
               <option value="Quarta-feira">Quarta-feira</option>
@@ -189,7 +189,7 @@ export default function Agendametos() {
 
             <label >Bairro da Coleta</label>
             <select name="bairro" onChange={e => setBairroID(e.target.value)}>
-              <option value={bairroID}>{bairroNome ? bairroNome : 'Selecione o Bairro'}</option>
+              <option value={bairroID ? bairroID : ''}>{bairroNome ? bairroNome : 'Selecione o Bairro'}</option>
               {listBairros.map(bairro => (
                 <option key={bairro.id} value={bairro.id}>{bairro.nome}</option>
               ))}
@@ -197,7 +197,7 @@ export default function Agendametos() {
 
             <label >Tipo de coleta</label>
             <select name="coleta" onChange={e => setTipoColeta(e.target.value)}>
-              <option value={tipoColeta.value}>{tipoColeta ? tipoColeta : 'Selecione o Tipo de Coleta'}</option>
+              <option value={tipoColeta.value ? tipoColeta.value : ''}>{tipoColeta ? tipoColeta : 'Selecione o Tipo de Coleta'}</option>
               <option value="Coleta Comum">Coleta comum</option>
               <option value="Coleta Seletiva">Coleta seletiva</option>
             </select>
