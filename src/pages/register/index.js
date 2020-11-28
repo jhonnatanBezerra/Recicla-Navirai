@@ -44,14 +44,14 @@ export default function Register() {
 
     }
 
-    if (data === {}) {
+    if (data !== {}) {
       try {
         await api.post('gestores', data);
-        alert('deu certo');
+        alert('Sucesso, novo gestor cadastrado !');
         history.push('/');
 
       } catch (err) {
-        showTost('error', err.response.data, 'Falha');
+        showTost('error', 'Preencha todos os campos', 'Falha');
       }
     } else {
       showTost('error', 'Preencha todos os campos', 'Falha');
