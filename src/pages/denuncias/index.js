@@ -31,9 +31,7 @@ export default function Denuncias() {
               {listDenuncias.map(denuncia => (
 
                 <li key={denuncia.id}>
-                  <strong>Denuncia ID</strong>
-                  <p>{denuncia.id}</p>
-
+                  
                   <strong>Denuncia</strong>
                   <p>{denuncia.descricao}</p>
 
