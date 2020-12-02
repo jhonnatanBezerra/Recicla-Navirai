@@ -150,6 +150,7 @@ export default function Acao() {
 
     };
 
+    console.log(dados);
 
     try {
       await api.put(`acoes/${acaoID}`, dados);
@@ -158,6 +159,7 @@ export default function Acao() {
       closeModal();
 
     } catch (err) {
+      console.log(dados);
       showTost('error', err.response.data, 'Falha');
     }
 
@@ -199,7 +201,7 @@ export default function Acao() {
 
             <textarea type="text" value={description ? description : ''} placeholder="Descrição" onChange={e => setDescription(e.target.value)} />
 
-            <input type="file" onChange={e => setFile(e.target.value)} />
+            <input type="file" onChange={e => setFile(e.target.file)} />
 
           </form>
         </div>

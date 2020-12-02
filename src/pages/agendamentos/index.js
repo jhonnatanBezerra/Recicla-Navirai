@@ -88,16 +88,19 @@ export default function Agendametos() {
       horario,
       tipoColeta,
     };
-    
 
-    try {
-      await api.post('agendamentos', data);
-      showTost('success', 'Agendamento salvo com sucesso !!!', 'Maravilha !')
-      buscaAgendamentos();
-      closeModal();
+    if (!tipoColeta || !diaSemana || !bairroID || !horario) {
+      showTost('error', 'Preencha todos os campos', 'Falha');
+    } else {
+      try {
+        await api.post('agendamentos', data);
+        showTost('success', 'Agendamento salvo com sucesso !!!', 'Maravilha !')
+        buscaAgendamentos();
+        closeModal();
 
-    } catch (err) {
-      showTost('error', err.response.data, 'Falha');
+      } catch (err) {
+        showTost('error', err.response.data, 'Falha');
+      }
     }
   }
 

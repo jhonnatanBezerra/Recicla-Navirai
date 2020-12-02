@@ -184,7 +184,7 @@ export default function Educacao() {
 
             <textarea type="text" value={descricao} onChange={e => setDescricao(e.target.value)} placeholder="Descrição" />
 
-            <input type="file" onChange={e => setFile(e.target.value)} placeholder="" />
+            <input type="file" onChange={e => setFile(e.target.file)} placeholder="" />
 
           </form>
         </div>
